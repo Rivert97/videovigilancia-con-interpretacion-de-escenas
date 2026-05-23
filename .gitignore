@@ -6,5 +6,9 @@
 *.toc
 *.synctex.gz
 *.fdb_latexmk
+*.bbl
+*.bcf
+*.fls
+*.xml
 
 report.pdf
