@@ -1,0 +1,36 @@
+services:
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis-stack
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  video-surveillance-app:
+    build: .
+    container_name: video-surveillance-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./weights:/workspace/weights
+      - ./instance:/workspace/video-surveillance-app/instance
+    depends_on:
+      - redis
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    devices:
+      - "${WEBCAM_DEVICE:-/dev/null}:${WEBCAM_DEVICE:-/dev/null}"
+    command:
+      - app
+
+volumes:
+  redis_data:

@@ -1,4 +1,10 @@
 .vscode/
+YOLOX/
+deepsort-pip/
+yolotracker/
+video-surveillance-app/
+instance/
+weights/
 
 *.aux
 *.log
