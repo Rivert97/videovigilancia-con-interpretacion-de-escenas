@@ -8,6 +8,8 @@ services:
     volumes:
       - redis_data:/data
     restart: unless-stopped
+    environment:
+      - TZ=America/Mexico_City
 
   video-surveillance-app:
     build: .
@@ -29,6 +31,8 @@ services:
               capabilities: [gpu]
     devices:
       - "${WEBCAM_DEVICE:-/dev/null}:${WEBCAM_DEVICE:-/dev/null}"
+    environment:
+      - TZ=America/Mexico_City
     command:
       - app
 
