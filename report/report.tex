@@ -276,13 +276,7 @@ Los parámetros que el usuario puede modificar son:
     \item Tiempo mínimo en escena $[0, \infty)$
 \end{itemize}
 
-\section{Instalación}
-
-La siguiente guía fue probada en una computadora con Windows 10, Intel Core i5-10300H, NVIDIA GeForce GTX 1050 Ti (4 GB), 8 GB RAM DDR4. Se incluyen algunos consejos para otros sistemas operativos.
-
-El proyecto puede instalarse en modo aplicación o modo desarrollo. El modo aplicación consiste en crear y utilizar un contenedor Docker con la aplicación web y los servicios de detección de objetos, es una instalación más ligera y sirve para probar y usar la aplicación. El modo desarrollo consiste en instalar Python y todas las librerías requeridas para el desarrollo, permite usar opciones como el reentrenamiento de modelos entre otros.
-
-\subsection{Contenido del repositorio}
+\section{Contenido del repositorio}
 
 En respositorio de la aplicación se encuentra dividido en diferentes carpetas correspondientes a paquetes de Python, modelos preentrenados y otros ejemplos.
 
@@ -293,23 +287,30 @@ En respositorio de la aplicación se encuentra dividido en diferentes carpetas c
     \item \textbf{video-surveillance-app:} Directorio que contiene la aplicación web para configuración del sistema, así como el servicio que hace la detección de los eventos en tiempo real.
 \end{itemize}
 
+\section{Instalación}
+
+La siguiente guía fue probada en una computadora con Windows 10 y Kubuntu 24.04. El hardware es Intel Core i5-10300H, NVIDIA GeForce GTX 1050 Ti (4 GB), 8 GB RAM DDR4.
+
+El proyecto puede instalarse en modo aplicación o modo desarrollo. El modo aplicación es una forma rápida y ligera de instalación, utilizando un contenedor Docker, sirve para probar y usar la aplicación pero tiene algunas limitantes. El modo desarrollo consiste en instalar Python y todas las librerías requeridas para el desarrollo, permite usar opciones como el reentrenamiento de modelos, la visualización en tiempo real el Windows, entre otros.
+
 \subsection{Instalación en modo Aplicación}
 
 \subsubsection{Requisitos}
 
 \begin{itemize}
     \item \textbf{Docker Desktop:} Descargar desde la página oficial\footnote{\url{https://www.docker.com/products/docker-desktop/}}, siguiendo las instrucciones para el sistema operativo correspondiente.
-    \item \textbf{(Opcional) Drivers de NVIDIA:} Descargar la versión correspondiente a la tarjeta gráfica instalada. Revise la página oficial de NVIDIA\footnote{\url{https://www.nvidia.com/es-es/drivers/}}. Se puede omitir si solo se usa inferencia en CPU (más lento). En Linux, para usar la GPU es necesario instalar el `Nvidia Container Toolkit'\footnote{\url{https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html}}.
+    \item \textbf{(Opcional) Drivers de NVIDIA:} Descargar la versión correspondiente a la tarjeta gráfica instalada. Revise la página oficial de NVIDIA\footnote{\url{https://www.nvidia.com/es-es/drivers/}}. Se puede omitir si solo se usa inferencia en CPU (más lento). En Linux, para usar la GPU es necesario instalar además el `Nvidia Container Toolkit'\footnote{\url{https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html}}.
+    \item \textbf{(Opcional) CUDA:} Si se descargan los drivers de NVIDIA, también es necesario instalar CUDA 12.6 desde el sitio oficial\footnote{https://developer.nvidia.com/cuda-12-6-0-download-archive}. Algunas libreraías no son compatibles con la version 13.0, por lo que es necesario tener una versión anterior.
 \end{itemize}
 
 \subsection{Comandos}
 
-1. Iniciar el servicio de \textit{Docker Desktop}. En Windows el servicio se inicia al abrir la aplicación, en Linux usualmente inicia de forma automática.
+1. Iniciar el servicio de \textit{Docker Desktop}. En Windows el servicio se inicia al abrir la aplicación, en Linux usualmente inicia de forma automática. Asegurarse de que no haya otros servicios o contenedores corriendo en los puertos de redis (6379, 8001) y en el puerto de la aplicación (8000).
 
-2. Crear los contenedores. Este comando descarga una imagen de Redis y construye la imagen de la aplicación. El proceso puede demorar varios minutos:
+2. Crear los contenedores y ejecutarlos. El comando siguiente construye la imagen de la aplicación, además descarga un contenedor Redis. El proceso puede demorar varios minutos:
 
 \begin{verbatim}
-    docker compose . --build
+    docker compose up --build
 \end{verbatim}
 
 3. Acceder a la aplicación en la URL \url{http://localhost:8000}. Por defecto, la aplicación se accede con el usuario \textit{admin@email.com} y la contraseña \textit{admin}.
@@ -324,15 +325,84 @@ En respositorio de la aplicación se encuentra dividido en diferentes carpetas c
 
 6. Para iniciar de nuevo la aplicación ya no es necesario usar la opción `--build'.
 
-Bajo esta configuración, es posible visualizar el comportamiento en tiempo real de la detección de eventos. Para ello se debe detener el servicio `tracking\_service' desde la aplicación web y ejecutar el siguiente comando:
+La base de datos y los clips de los eventos se almacenarán en `./instance'.
+
+Bajo esta configuración, en Linux, es posible visualizar el comportamiento en tiempo real de la detección de eventos. Para ello se debe detener el servicio `tracking\_service' desde la aplicación web y ejecutar el siguiente comando:
 
 \begin{verbatim}
-
+    docker exec video-surveillance-app
 \end{verbatim}
 
+\subsection{Instalación en modo Desarrollo}
+
+\subsubsection{Requisitos}
+
 \begin{enumerate}
+    \item \textbf{Requisitos de modo Aplicación}
     \item \textbf{Python 3.12:} Descargar la versión oficial desde la página oficial\footnote{\url{https://www.python.org/downloads/}} e instalarla, agregar la ruta al PATH. En systemas Linux, se recomienda utilizar Pyenv\footnote{\url{https://github.com/pyenv/pyenv}} para no modificar la versión instalada en el sistema.
+    \item \textbf{(Recomendado) Venv:} Para manejo de entornos virtuales en Python. Cualquier otra herramienta como conda funciona también, pero esta guía utiliza venv.
 \end{enumerate}
+
+\subsubsection{Comandos}
+
+1. Crear un entorno virtual de python. Utilizar el binario de python 3.12 en caso de tener varias versiones instaladas:
+
+\begin{verbatim}
+    python -m venv .venv
+\end{verbatim}
+
+2. Activar el entorno virtual:
+
+\begin{verbatim}
+    # Linux
+    source .venv/bin/activate
+    # Windows
+    .venv\Scripts\activate
+\end{verbatim}
+
+3. Instalar Pytorch:
+
+\begin{verbatim}
+    pip install torch==2.10.0 torchvision==0.25.0 \
+    --index-url https://download.pytorch.org/whl/cu126
+\end{verbatim}
+
+4. Instalar paquetes y dependencias:
+
+\begin{verbatim}
+    pip install --no-build-isolation YOLOX
+    pip install -e deepsort-pip
+    pip install -e yolotracker
+    cd video-surveillance-app
+    pip install -r requirements.txt
+\end{verbatim}
+
+5. Iniciar el servicio de \textit{Docker Desktop}. En Windows el servicio se inicia al abrir la aplicación, en Linux usualmente inicia de forma automática. Asegurarse de que no haya otros servicios o contenedores corriendo en los puertos de redis (6379, 8001) y en el puerto de la aplicación (8000).
+
+6. Iniciar un contenedor con Redis:
+
+\begin{verbatim}
+    docker run -p 6379:6379 -p 8001:8001 --rm -d --name redis \
+    redis/redis-stack:latest
+\end{verbatim}
+
+7. Inicializar la base de datos y crear un usuario y contraseña.:
+
+\begin{verbatim}
+    python init_db.py "<Nombre>" "<Correo>" "<Contraseña>"
+\end{verbatim}
+
+8. Ejecutar la aplicación:
+
+\begin{verbatim}
+    python run.py
+\end{verbatim}
+
+9. Para finalizar la aplicación utilizar `Ctrl+c' en la consola.
+
+La base de datos y los clips de los eventos se almacenarán en `./video-surveillance-app/instance'.
+
+En modo desarrollo, es posible utilizar la webcam del dispositivo como prueba, tanto en Windows como en Linux. Para ello, se debe indicar el índice de la webcam (usualmente 0) en lugar de la URL.
 
 \subsection{Paquetes}
 

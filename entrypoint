@@ -22,7 +22,7 @@ case $ACTION in
     fi
 
     echo "Iniciando la aplicación..."
-    gunicorn --bind 0.0.0.0:8000 wsgi:app
+    gunicorn --worker-class gthread --workers 1 --threads 8 --bind 0.0.0.0:8000 wsgi:app
     ;;
   "service")
     if [ -z "$2" ]; then

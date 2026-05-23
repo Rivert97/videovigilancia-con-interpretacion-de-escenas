@@ -10,6 +10,8 @@ services:
     restart: unless-stopped
     environment:
       - TZ=America/Mexico_City
+    networks:
+      - surveillance-network
 
   video-surveillance-app:
     build: .
@@ -33,8 +35,15 @@ services:
       - "${WEBCAM_DEVICE:-/dev/null}:${WEBCAM_DEVICE:-/dev/null}"
     environment:
       - TZ=America/Mexico_City
+      - REDIS_HOST=redis
+    networks:
+      - surveillance-network
     command:
       - app
 
 volumes:
   redis_data:
+
+networks:
+  surveillance-network:
+    driver: bridge

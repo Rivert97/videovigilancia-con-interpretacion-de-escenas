@@ -5,6 +5,7 @@ yolotracker/
 video-surveillance-app/
 instance/
 weights/
+.venv/
 
 *.aux
 *.log
