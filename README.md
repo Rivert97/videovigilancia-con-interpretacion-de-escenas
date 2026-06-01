@@ -57,7 +57,7 @@ cd video-surveillance-app
 pip install -r requirements.txt
 ```
 
-6. Crear y ejecutar un contenedor con Redis. Este se usa para el *almacenamento compartido entre cámaras* y para el envío de notificaciones en la aplicación.
+6. Crear y ejecutar un contenedor con Redis. Éste se usa para el *caché Redis* y para el envío de notificaciones en la aplicación.
 
 ```bash
 docker run -p 6379:6379 -p 8001:8001 --rm -d --name redis redis/redis-stack:latest
@@ -99,7 +99,7 @@ python run.py
 
 La mayoría de las cámaras IP implementan el protocolo RTSP como un protocolo de envío de video secundario. Este protocolo permite a aplicaciones de terceros acceder al video en tiempo real a través de una conexión de red local.
 
-Para un funcionamiento adecuado del sistema, la cámara debe estar conectada por Ethernet, ya que las conexiones WiFi son más lentas e inestables.
+Para un funcionamiento adecuado del sistema, la cámara debe estar conectada por cable ethernet, ya que las conexiones WiFi son más lentas e inestables.
 
 1. Activar el protocolo desde la aplicación del proveedor. Para cámaras Ezviz, revisar [RTSP en Ezviz](https://svtclti.com/manuales/CCTV/CAMARAS/EZVIZ/C%C3%B3mo%20activar%20RTSP%20en%20Ezviz.pdf).
 
@@ -145,9 +145,11 @@ Se considera como objeto abandonado a objetos de tipo bolsas o desconocido que p
 <img src="./images/add_abandoned.png" width="800" alt="Agregar detector de abandono">
 </p>
 
-Además, el detector necesita calcular el fondo de referencia de la escena. Para ello se debe esperar a que la escena esté en su estado base, es decir, sin objetos temporales (puede haber personas caminando), y se debe hacer clic en el botón de *Capturar Fondo*. Al dar click en el botón se capturará el fondo de la escena y se mostrará.
+Además, el detector necesita calcular el fondo de referencia de la escena. Para ello se debe esperar a que la escena esté en su estado base, es decir, sin objetos temporales (puede haber personas caminando), y se debe hacer clic en el botón de *Capturar Fondo*. Al dar click en el botón se capturarán 300 frames para promediar el fondo de la escena.
 
-#Agregar imagen#
+<p align="center">
+<img src="./images/get_background.png" width="800" alt="Obtener el fondo">
+</p>
 
 El fondo puede re-capturarse cuantas veces sea necesario.
 
@@ -155,17 +157,21 @@ El fondo puede re-capturarse cuantas veces sea necesario.
 
 Para la intrusión, primero se define un área restringida con un polígono dibujado en la imagen. Cuando una persona ingrese a esa área se considera como intrusión.
 
-Se utiliza la opción de *Agregar detector*. La aplicación capturará una imagen de la cámara, sobre la cual se debe dibujar un poligono dando clicks en la imagen. Una vez finalizado se da clic en *Finalizar polígono*.
+Se utiliza la opción de *Agregar detector*. La aplicación capturará una imagen de la cámara, sobre la cual se debe dibujar un polígono dando clics en la imagen. Una vez finalizado se da clic en *Finalizar polígono* y el programa conectará el último punto con el primero para finalizar.
 
-#Agregar imagen#
+<p align="center">
+<img src="./images/draw_polygon.png" width="800" alt="Dibujar polígono">
+</p>
 
 Posteriormente se configura el porcenaje del cuerpo de la persona que debe ingresar al polígono para que se considere como intrusión. Además, el sistema permite establecer un rango de horas en que el detector está activo, de esta forma la detección puede realizarse solo cuando es de noche, o fuera de horario laboral. Por defecto se aplica la detección 24hrs.
 
-#Agregar imagen#
+<p align="center">
+<img src="./images/add_intrusion.png" width="800" alt="Agregar detector de intrusión">
+</p>
 
 ### Armas
 
-Cuando un arma se detecta en la escena se lanza el evento, sin embargo, para evitar falsos positivos se establece un mínimo de tiempo que el arma debe ser detectada antes de lanzar el evento. Este valor se configura al utilizar la opción de *Agregar detector*, bajo la opción de *Tiempo de detección*, donde usualmente se configura un tiempo corto.
+Cuando un arma se detecta en la escena se lanza el evento, sin embargo, para evitar falsos positivos se establece un mínimo de tiempo que el arma debe ser detectada antes de lanzar el evento. Este valor se configura al utilizar la opción de *Agregar detector*, bajo la opción de *Tiempo de detección*, donde usualmente se configura un tiempo corto (1 segundo).
 
 <p align="center">
 <img src="./images/add_weapon.png" width="800" alt="Agregar detector de armas">
@@ -198,4 +204,13 @@ Este repositorio contiene el código fuente de la aplicación, separado en difer
 
 * **weights/:** Modelos en formato ONNX para la aplicación.
 
-* **compose.yml, Dockerfile:** Archivos de creación de contenedores para instalación de la aplicación en *Modo apliación* (instalación rápida pero limitada).
+* **samples/:** Videos de muestra con escenarios reales.
+
+    * `evaluation/` contiene los videos originales.
+    * `evaluation_detection/` contiene los videos procesados que muestra los eventos detectados con cajas de detección de colores.
+    * `features/` videos extra para mostrar alguna característica interesante del sistema.
+    * `features_detection/` videos extra procesados, no necesariamente se muestra detecciones de eventos. El archivo [README.md](./samples/features_detection/README.md) contiene una breve explicación de qué ver en cada video.
+
+* **images/:** Imágenes para la documentación.
+
+* **compose.yml, Dockerfile, entrypoint:** Archivos de creación de contenedores para instalación de la aplicación en *Modo aplicación* (instalación rápida pero limitada).

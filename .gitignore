@@ -6,6 +6,8 @@ video-surveillance-app/
 instance/
 weights/
 .venv/
+eval_dataset_cctv/
+samples/
 
 *.aux
 *.log
