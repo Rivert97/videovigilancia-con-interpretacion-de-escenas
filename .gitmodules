@@ -1,0 +1,12 @@
+[submodule "src/deepsort-pip"]
+	path = src/deepsort-pip
+	url = git@github.com:Rivert97/deepsort-pip.git
+[submodule "src/YOLOX"]
+	path = src/YOLOX
+	url = git@github.com:Rivert97/YOLOX.git
+[submodule "src/yolotracker"]
+	path = src/yolotracker
+	url = git@github.com:Rivert97/yolotracker.git
+[submodule "src/video-surveillance-app"]
+	path = src/video-surveillance-app
+	url = git@github.com:Rivert97/video-surveillance-app.git
