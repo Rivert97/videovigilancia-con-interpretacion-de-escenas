@@ -21,7 +21,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ../weights:/workspace/weights
+      - ../weights:/weights
       - ../instance:/workspace/video-surveillance-app/instance
     depends_on:
       - redis
