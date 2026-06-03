@@ -89,7 +89,7 @@ Además, puede utilizarse con GPU o únicamente con CPU. Considere que la infere
 Independientemente del tipo de instalación se deben seguir los siguientes pasos:
 
 1. Descargar los modelos preentrenados desde Google Drive ([Link](https://drive.google.com/file/d/1HcN4MLRHlNK7AFgKPlwyMOMSZxjR-UDZ/view?usp=sharing)).
-2. Descomprimir la carpeta en `tenaxes/`. La estructura final debe ser:
+2. Descomprimir la carpeta en `videovigilancia-con-interpretacion-de-escenas/`. La estructura final debe ser:
 
     ```
     .
@@ -329,7 +329,7 @@ No es necesario descargar ningún dataset para el funcionamiento de la aplicaci�
 
 ## Ejecutar la aplicación
 
-1. Si se instaló en *modo aplicación*, usar docker compose para iniciar los contenedores desde la carpeta raiz del repositorio `tenaxes/`.
+1. Si se instaló en *modo aplicación*, usar docker compose para iniciar los contenedores desde la carpeta raiz del repositorio `videovigilancia-con-interpretacion-de-escenas/`.
 
     ```bash
     docker compose -f docker/compose.yml up
