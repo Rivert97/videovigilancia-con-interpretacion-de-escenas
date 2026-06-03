@@ -1,0 +1,45 @@
+services:
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis-stack
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    environment:
+      - TZ=America/Mexico_City
+    networks:
+      - surveillance-network
+
+  video-surveillance-app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: video-surveillance-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../weights:/workspace/weights
+      - ../instance:/workspace/video-surveillance-app/instance
+    depends_on:
+      - redis
+    restart: unless-stopped
+    gpus: all
+    devices:
+      - "${WEBCAM_DEVICE:-/dev/null}:${WEBCAM_DEVICE:-/dev/null}"
+    environment:
+      - TZ=America/Mexico_City
+      - REDIS_HOST=redis
+    networks:
+      - surveillance-network
+    command:
+      - app
+
+volumes:
+  redis_data:
+
+networks:
+  surveillance-network:
+    driver: bridge
