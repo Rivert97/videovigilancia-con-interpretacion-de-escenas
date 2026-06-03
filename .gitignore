@@ -1,7 +1,6 @@
 .vscode/
 weights/
 .venv/
-samples/
 
 *.aux
 *.log

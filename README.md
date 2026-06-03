@@ -38,7 +38,10 @@ NOTA: La documentación principal está en español, pero la documentación de l
     * [Webcam](#pruebas-con-webcam-integrada)
 * [Pruebas automatizadas](#pruebas-automatizadas)
 * [Estructura del proyecto](#estructura-del-proyecto)
-
+* [Tecnologías utilizadas](#tecnologías-utilizadas)
+* [Métricas principales](#métricas-principales)
+* [Limintaciones conocidas](#limitaciones-conocidas)
+* [Créditos](#créditos)
 
 ## Requisitos del sistema
 
@@ -250,6 +253,9 @@ Se considera como merodeo cuando una persona se muestra en escena durante más d
 <p align="center">
 <img src="./docs/imagenes/add_loitering.png" width="800" alt="Agregar detector de merodeo">
 </p>
+<p align="center">
+<img src="./docs/imagenes/loitering_example.png" width="800" alt="Ejemplo de merodeo">
+</p>
 
 ### Objetos abandonados
 
@@ -263,6 +269,10 @@ Además, el detector necesita calcular el fondo de referencia de la escena. Para
 
 <p align="center">
 <img src="./docs/imagenes/get_background.png" width="800" alt="Obtener el fondo">
+</p>
+
+<p align="center">
+<img src="./docs/imagenes/abandoned_example.png" width="800" alt="Ejemplo de abandono">
 </p>
 
 NOTA: El fondo puede re-capturarse cuantas veces sea necesario.
@@ -283,12 +293,19 @@ Posteriormente se configura el porcenaje del cuerpo de la persona que debe ingre
 <img src="./docs/imagenes/add_intrusion.png" width="800" alt="Agregar detector de intrusión">
 </p>
 
+<p align="center">
+<img src="./docs/imagenes/intrusion_example.png" width="800" alt="Ejemplo de intrusión">
+</p>
+
 ### Armas
 
 Cuando un arma se detecta en la escena se lanza el evento, sin embargo, para evitar falsos positivos se establece un mínimo de tiempo que el arma debe ser detectada antes de lanzar el evento. Este valor se configura al utilizar la opción de *Agregar detector*, bajo la opción de *Tiempo de detección*, donde usualmente se configura un tiempo corto (1 segundo).
 
 <p align="center">
 <img src="./docs/imagenes/add_weapon.png" width="800" alt="Agregar detector de armas">
+</p>
+<p align="center">
+<img src="./docs/imagenes/weapon_example.png" width="800" alt="Ejemplo de armas">
 </p>
 
 ## Descargas de modelos y datasets
@@ -419,6 +436,21 @@ Es posible probar el sistema con una webcam, ya sea una conectada por USB o la c
 
 ## Pruebas automatizadas
 
+Para ejecutar las pruebas automatizadas se hace uso de *Pytest*.
+
+Hay pruebas en el directorio `tests/` de la raíz del repositorio, y también, cada paquete en `src/` cuenta con sus propias pruebas en su carpeta `tests/`.
+
+Desde la carpeta raíz del repositorio ejecutar:
+
+```bash
+pytest
+```
+
+Detalles:
+
+* `tests/`: Smoke tests de todo el sistema. Requiren que se hayan descargado todos los modelos preentrenados en `weights/`.
+* `src/YOLOX/tests/`: Pruebas unitarias específicas de funcionamiento de modelos YOLOX.
+* `src/yolotracker/tests/`: Pruebas unitarias de detección de eventos.
 
 ## Estructura del proyecto
 
@@ -431,15 +463,25 @@ Es posible probar el sistema con una webcam, ya sea una conectada por USB o la c
 
     * **video-surveillance-app/:** Directorio con el código fuente de la aplicación web y el servicio de detección de eventos en tiempo real. Además, contiene la lógica para obtener y procesar video en tiempo real de múltiples cámaras en simultáneo. Consulte [src/video-surveillance-app/README.md](./src/video-surveillance-app/README.md) para más detalles.
 
-* **weights/:** Modelos en formato ONNX para la aplicación.
+* **data/:** Carpeta para descargar datasets y ejemplos de evaluación. Contiene un video demo pero aquí se coloca el dataset de eventos de seguridad.
 
-* **samples/:** Videos de muestra con escenarios reales.
+* **docker/:** Archivos para construir contenedores Docker de la aplicación cuando se instala en *modo aplicación*.
 
-    * `evaluation/` contiene los videos originales.
-    * `evaluation_detection/` contiene los videos procesados que muestra los eventos detectados con cajas de detección de colores.
-    * `features/` videos extra para mostrar alguna característica interesante del sistema.
-    * `features_detection/` videos extra procesados, no necesariamente se muestra detecciones de eventos. El archivo [README.md](./samples/features_detection/README.md) contiene una breve explicación de qué ver en cada video.
+* **docs/:** Contiene archivos auxiliares para la documentación.
 
-* **images/:** Imágenes para la documentación.
+* **instance/:** Carpeta vacía donde se colocan los datos de la aplicación cuando se instala en *modo aplicación*. En modo desarrollo se usa *src/video-surveillance-app/instance*.
 
-* **compose.yml, Dockerfile, entrypoint:** Archivos de creación de contenedores para instalación de la aplicación en *modo aplicación* (instalación rápida pero limitada).
+* **scripts/:** Carpeta para colocar scripts de configuración. Vacía ya que la configuración se realiza con Docker o simplemente ejecutando comandos. Se hace así para mantener compatibilidad de Linux y Windows.
+
+* **weights/:** Carpeta para descargar y colocar modelos en formato ONNX para la aplicación.
+
+* **tests/:** Pruebas generales de la aplicación.
+
+## Tecnologías utilizadas
+
+## Métricas principales
+
+## Limitaciones conocidas
+
+## Créditos
+
