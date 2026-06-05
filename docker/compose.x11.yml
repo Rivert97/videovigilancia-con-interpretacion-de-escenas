@@ -1,0 +1,8 @@
+services:
+  video-surveillance-app:
+    environment:
+      - TZ=America/Mexico_City
+      - REDIS_HOST=redis-stack
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw

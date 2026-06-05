@@ -1,6 +1,6 @@
 services:
   redis:
-    image: redis/redis-stack:latest
+    image: redis/redis-stack:7.4.0-v8
     container_name: redis-stack
     ports:
       - "6379:6379"
@@ -31,7 +31,7 @@ services:
       - "${WEBCAM_DEVICE:-/dev/null}:${WEBCAM_DEVICE:-/dev/null}"
     environment:
       - TZ=America/Mexico_City
-      - REDIS_HOST=redis
+      - REDIS_HOST=redis-stack
     networks:
       - surveillance-network
     command:
