@@ -38,8 +38,8 @@ RUN pip install --break-system-packages -r requirements.txt
 
 WORKDIR /workspace
 
-COPY --chmod=0755 docker/entrypoint ./entrypoint
+COPY --chmod=0755 docker/entrypoint.sh ./entrypoint.sh
 
 EXPOSE 8000
 
-ENTRYPOINT ["bash", "/workspace/entrypoint"]
+ENTRYPOINT ["bash", "/workspace/entrypoint.sh"]

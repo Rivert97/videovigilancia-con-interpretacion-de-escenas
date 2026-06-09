@@ -32,7 +32,7 @@ case $ACTION in
 
     cd "$WORKSPACE/video-surveillance-app/scripts/"
 
-    bash $2 "${@:3}"
+    bash "${2}.sh" "${@:3}"
     ;;
   "yolotracker")
     if [ -z "$2" ]; then
@@ -42,10 +42,10 @@ case $ACTION in
 
     cd "$WORKSPACE/yolotracker/scripts/"
 
-    python $2 "${@:3}"
+    python "${2}.py" "${@:3}"
     ;;
   *)
-    echo "Usage: $0 {app|yolotracker} [OPTIONS]"
+    echo "Usage: $0 {app|service|yolotracker} [OPTIONS]"
     exit 1
 esac
 

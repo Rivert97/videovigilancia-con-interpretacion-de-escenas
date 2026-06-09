@@ -1,6 +1,6 @@
 # Videovigilancia con interpretación de escenas
 
-Este proyecto tiene por objetivo utilizar cámaras de videovigilancia para detectar eventos de seguridad, como son: Personas merodeando, personas ingresando a áreas restringidas, objetos abandonados, y la presencia de armas de fuego.
+Este proyecto tiene por objetivo utilizar cámaras de videovigilancia para detectar eventos de seguridad, como son: Personas merodeando, personas ingresando a áreas restringidas, objetos abandonados, y la presencia de armas (cuchillos y armas de fuego).
 
 Para generar alertas de seguridad, el sistema combina técnicas de inteligencia artificial y procesamiento de imágenes para detectar objetos y personas en la escena. Posteriormente, les da seguimiento a lo largo del video y, finalmente, emplea esta información para analizar la escena y decidir si alguno de ellos representa un riesgo.
 
@@ -10,7 +10,7 @@ Para generar alertas de seguridad, el sistema combina técnicas de inteligencia 
 
 NOTA: La documentación principal está en español, pero la documentación de los submódulos está en inglés, principalmente para mantener compatibilidad con los repositorios originales.
 
-## Categoríia y nombre del equipo
+## Categoría y nombre del equipo
 
 * **Categoría:** C - Analítica de video para seguridad perimetral
 * **Equipo:** Videovigilancia con interpretación de escenas
@@ -63,7 +63,7 @@ El proyecto cuenta con dos modos de instalación:
 
 Además, puede utilizarse con GPU o únicamente con CPU. Considere que la inferencia con CPU es más lenta. Los requisitos generales deben instalarse independientemente del modo de uso de la aplicación.
 
-### Generales
+### Requisitos Generales
 
 * **Sistema Operativo:** Windows 10 o Ubuntu 24.04. Esta guía fue probada en Windows 10 y en Kubuntu 24.04.
 * **Hardware Mínimo:**
@@ -92,12 +92,12 @@ Independientemente del tipo de instalación se deben seguir los siguientes pasos
 1. Descargar el repositorio y sus submódulos:
 
     ```bash
-    git clone --recursive-submodules https://github.com/Rivert97/videovigilancia-con-interpretacion-de-escenas.git
+    git clone --recurse-submodules https://github.com/Rivert97/videovigilancia-con-interpretacion-de-escenas.git
     cd videovigilancia-con-interpretacion-de-escenas
     ```
 
 2. Descargar los modelos preentrenados desde Google Drive ([Link](https://drive.google.com/file/d/1HcN4MLRHlNK7AFgKPlwyMOMSZxjR-UDZ/view?usp=sharing)).
-3. Descomprimir la carpeta en `videovigilancia-con-interpretacion-de-escenas/`. La estructura final debe ser:
+3. Descomprimir la carpeta en `videovigilancia-con-interpretacion-de-escenas/weights`. La estructura final debe ser:
 
     ```
     .
