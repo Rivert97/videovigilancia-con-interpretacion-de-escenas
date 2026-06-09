@@ -4,6 +4,8 @@ Este proyecto tiene por objetivo utilizar cámaras de videovigilancia para detec
 
 Para generar alertas de seguridad, el sistema combina técnicas de inteligencia artificial y procesamiento de imágenes para detectar objetos y personas en la escena. Posteriormente, les da seguimiento a lo largo del video y, finalmente, emplea esta información para analizar la escena y decidir si alguno de ellos representa un riesgo.
 
+Para un video demostrativo del funcionamiento y explicación del funcionamiento, puede consultar: [Videovigilancia con interpretación de escenas](https://youtu.be/nbg8GqHGUHg).
+
 <p align="center">
 <img src="./docs/diagramas/general_schema.png" width="100%" alt="Funcionamiento general">
 </p>
