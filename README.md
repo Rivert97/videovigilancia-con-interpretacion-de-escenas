@@ -10,12 +10,12 @@ Para generar alertas de seguridad, el sistema combina técnicas de inteligencia 
 
 NOTA: La documentación principal está en español, pero la documentación de los submódulos está en inglés, principalmente para mantener compatibilidad con los repositorios originales.
 
-# Categória y nombre del equipo
+## Categoríia y nombre del equipo
 
-* **Categoría:** Analítica de video para seguridad perimetral
+* **Categoría:** C - Analítica de video para seguridad perimetral
 * **Equipo:** Videovigilancia con interpretación de escenas
 
-# Tabla de contenidos
+## Tabla de contenidos
 
 * [Requisitos del sistema](#requisitos-del-sistema)
     * [Modo aplicación](#requisitos-en-modo-aplicación)
@@ -45,13 +45,14 @@ NOTA: La documentación principal está en español, pero la documentación de l
 
 ## Requisitos del sistema
 
-El proyecto cuenta con dos modos de instalación y uso:
+El proyecto cuenta con dos modos de instalación:
 
-* **Modo aplicación:** Utiliza Docker para desplegar el sistema de forma rápida, sirve para probar y usar la aplicación.
-    * Control únicamente a través de aplicación web.
+* **Modo aplicación:** Utiliza Docker para desplegar el sistema de forma rápida.
+    * Control a través de aplicación web.
     * Capturar video de cámaras por RTSP.
     * Alta de detectores de eventos.
     * Visualización de bitácoras y descarga de clips de eventos.
+    * En Linux. Captura de video de cámaras web, siguiendo [Conectar cámara web al contenedor](./docs/conectar_camara_web.md).
 * **Modo desarrollo:** Instala Python y todas sus dependencias para probar todos los scripts y funcionalidades del sistema.
     * Funcionalidades del *modo aplicación*.
     * Capturar video de cámaras web integradas o conectadas por USB.
@@ -69,10 +70,10 @@ Además, puede utilizarse con GPU o únicamente con CPU. Considere que la infere
     * Intel Core i5-10300H
     * 8 GB de RAM DDR4
     * GPU NVIDIA con 4 GB de memoria (Opcional. Requerido para entrenamiento y para inferencia con cuda.)
-* **Docker Engine:** En Linux, seguir la guía de instalación de [Docker Engine en Linux](https://docs.docker.com/engine/install/), no se recomienda instalar *Docker Desktop* por incompatibilidades en el uso de la GPU, además se recomienda el usuario al grupo docker para poder ejecuar contenedores  sin sudo [Ver Aquí](https://www.drupaladicto.com/snippet/como-corregir-error-docker-got-permission-denied-while-trying-connect-docker-daemon-socket). En Windows, se recomienda instalar [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+* **Docker Engine:** En Linux, seguir la guía de instalación de [Docker Engine en Linux](https://docs.docker.com/engine/install/), no se recomienda instalar *Docker Desktop* por incompatibilidades en el uso de la GPU, además se recomienda agregar el usuario al grupo docker para poder ejecuar contenedores  sin sudo [Ver Aquí](https://www.drupaladicto.com/snippet/como-corregir-error-docker-got-permission-denied-while-trying-connect-docker-daemon-socket). En Windows, se recomienda instalar [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 * **Drivers de NVIDIA:** Descargar la versión correspondiente a la tarjeta gráfica instalada. Revise la [Página Oficial de NVIDIA](https://www.nvidia.com/es-es/drivers/). En Ubuntu y derivados, checa este link: [NVIDIA drivers installation](https://ubuntu.com/server/docs/how-to/graphics/install-nvidia-drivers/).
 * **Cámara IP con soporte RTSP:** Para probar la aplicación en tiempo real es necesario tener una cámara conectada a la misma red que el equipo donde se intalará la aplicación.
-* **Cámara web:** En *modo desarrollo* se puede probar la apliación con una cámara web integrada o conectada por USB.
+* **Cámara web:** En *modo desarrollo* se puede probar la aplicación con una cámara web integrada o conectada por USB.
 
 ### Requisitos en *modo aplicación*
 
@@ -88,8 +89,15 @@ Además, puede utilizarse con GPU o únicamente con CPU. Considere que la infere
 
 Independientemente del tipo de instalación se deben seguir los siguientes pasos:
 
-1. Descargar los modelos preentrenados desde Google Drive ([Link](https://drive.google.com/file/d/1HcN4MLRHlNK7AFgKPlwyMOMSZxjR-UDZ/view?usp=sharing)).
-2. Descomprimir la carpeta en `videovigilancia-con-interpretacion-de-escenas/`. La estructura final debe ser:
+1. Descargar el repositorio y sus submódulos:
+
+    ```bash
+    git clone --recursive-submodules https://github.com/Rivert97/videovigilancia-con-interpretacion-de-escenas.git
+    cd videovigilancia-con-interpretacion-de-escenas
+    ```
+
+2. Descargar los modelos preentrenados desde Google Drive ([Link](https://drive.google.com/file/d/1HcN4MLRHlNK7AFgKPlwyMOMSZxjR-UDZ/view?usp=sharing)).
+3. Descomprimir la carpeta en `videovigilancia-con-interpretacion-de-escenas/`. La estructura final debe ser:
 
     ```
     .
@@ -100,11 +108,13 @@ Independientemente del tipo de instalación se deben seguir los siguientes pasos
     │   ├── osnet_x0_25_msmt17.onnx
     │   ├── osnet_x0_25_msmt17.onnx.data
     │   ├── yolox_s.onnx
+    │   ├── yolox_s_weapon.onnx
+    │   ├── yolox_s_weapon.onnx.data
     │   ├── yolox_s_weapon_merged.onnx
     │   └── yolox_s_weapon_merged.onnx.data
     ...
 
-## Instalación en *modo aplicación*
+### Instalación en *modo aplicación*
 
 1. Iniciar el servicio de *Docker*. En Windows el servicio se inicia al abrir *Docker Desktop*, en Linux usualmente inicia de forma automática.
 2. Detener cualquier servicio que esté corriendo en los puertos de redis (6379, 8001) o en el puerto de la aplicación (8000).
@@ -118,7 +128,7 @@ Independientemente del tipo de instalación se deben seguir los siguientes pasos
 
 NOTA: En *modo aplicación*, los modelos son cargados desde `weights/` y los datos de la aplicación son guardados en `instance/`.
 
-## Instalación en *modo desarrollo*
+### Instalación en *modo desarrollo*
 
 1. Detener cualquier servicio que esté corriendo en los puertos de Redis (6379, 8001) o de la aplicación (8000).
 
@@ -213,8 +223,6 @@ La configuración de la aplicación es la misma tanto para el *modo aplicación*
     Cada que se modifique alguna configuración del sistema, las cámaras o los detectores, es necesario reiniciar el servicio. Es recomendable apagar el servicio antes de hacer modificaciones, pues algunas opciones de los detectores requieren que el servicio esté desactivado para conectarse a las cámaras.
 
 ### Agregar cámara RTSP
-
-La mayoría de las cámaras IP implementan el protocolo RTSP como un protocolo de envío de video secundario. Este protocolo permite a aplicaciones de terceros acceder al video en tiempo real a través de una conexión de red local.
 
 Para un funcionamiento adecuado del sistema, la cámara debe estar conectada por cable ethernet, ya que las conexiones WiFi son inestables.
 
@@ -312,10 +320,13 @@ Cuando un arma se detecta en la escena se lanza el evento, sin embargo, para evi
 
 ### Modelos
 
-* Para el funcionamiento de la aplicación, únicamente se necesita descargar los modelos preentrenados del [link de Google Drive](https://drive.google.com/file/d/1HcN4MLRHlNK7AFgKPlwyMOMSZxjR-UDZ/view?usp=sharing) y descomprimirlos en `weights/`.
-    * El modelo de detección de objetos `yolox_s.onnx` se descargó del [repositorio de YOLOX original](https://github.com/Megvii-BaseDetection/YOLOX/tree/main/demo/ONNXRuntime).
-    * El modelo de extracción de características `osnet_x0_25_msmt17.onnx` se obtuvo siguiendo la guía para [Obtener el modelo ReID preentrenado](./src/yolotracker/docs/get_osnet_for_reid.md).
-    * El modelo de detección de armas `yolox_s_weapon_merged.onnx` se obtuvo al reentrenar un modelo *yolox_s* en un conjunto de datos de detección de armas, siguiendo la [Gúia para entrenar con Simuletic Syntectic CCTV Weapon datasets](./src/YOLOX/docs/train_cctv_weapon.md).
+Para el funcionamiento de la aplicación, únicamente se necesita descargar los modelos preentrenados del [link de Google Drive](https://drive.google.com/file/d/1HcN4MLRHlNK7AFgKPlwyMOMSZxjR-UDZ/view?usp=sharing) y descomprimirlos en `weights/`.
+
+Si deseas conocer más detalles:
+
+* El modelo de detección de objetos `yolox_s.onnx` se descargó del [repositorio de YOLOX original](https://github.com/Megvii-BaseDetection/YOLOX/tree/main/demo/ONNXRuntime).
+* El modelo de extracción de características `osnet_x0_25_msmt17.onnx` se obtuvo siguiendo la guía para [Obtener el modelo ReID preentrenado](./src/yolotracker/docs/get_osnet_for_reid.md).
+* El modelo de detección de armas `yolox_s_weapon_merged.onnx` se obtuvo al reentrenar un modelo *yolox_s* en un conjunto de datos de detección de armas, siguiendo la [Gúia para entrenar con Simuletic Syntectic CCTV Weapon datasets](./src/YOLOX/docs/train_cctv_weapon.md).
 
 ### Datasets
 
@@ -324,8 +335,10 @@ No es necesario descargar ningún dataset para el funcionamiento de la aplicaci�
 * Para el reentrenamiento del modelo de detección de armas, se debe serguir la [Guía para entrenar con Simuletic Syntectic CCTV Weapon datasets](./src/YOLOX/docs/train_cctv_weapon.md), que utiliza dos datasets:
     * **[Simuletic Synthetic CCTV Weapon-Detection dataset](https://simuletic.com/blog/weapon-detection-dataset):** Creado con imágenes sintéticas de personas sosteniendo armas de fuego. Contiene dos clases: persona, arma.
     * **[Simuletic Synthetic CCTV ATM Robbery Detection Dataset: Gun & Knife](https://www.kaggle.com/datasets/simuletic/cctv-atm-robbery-detection-dataset-gun-and-knife):** Creado con imágenes sintéticas de personas siendo asaltadas en cajeros de banco. Contiene cuatro clases: agresor, víctima, arma, cuchillo.
-* Para la evaluación de eventos en videos de cámaras reales, se debe seguir la [Guía para evaluar la detección de eventos](./src/yolotracker/docs/event_detection.md), que utiliza un pequeño conjunto de evaluación que se encuentra disponible en el [link de Google Drive](https://drive.google.com/file/d/169DDeR_QuUfoy4pEBKOEI34NZEogCQpp/view?usp=sharing). Este conjunto tiene algunos clips de [VIRAT Dataset 2.0](https://viratdata.org/) y videos propios.
-* Para la evaluación de la calidad de detección de objetos en los videos, se debe seguir la [Guía para evaluar la detección de objetos](./src/yolotracker/docs/eval_object_detection.md), que utiliza algunos videos del dataset [VIRAT Dataset 2.0](https://viratdata.org).
+* Para la evaluación de eventos en videos de cámaras reales, se debe seguir la [Guía para evaluar la detección de eventos](./src/yolotracker/docs/event_detection.md), que utiliza un dataset personalizado:
+    * **[Dataset de detección de eventos](https://drive.google.com/file/d/1I6_n2AQM6NCNeEuJ2FRaeDDY2MIuvrMF/view?usp=drive_link):** Este conjunto de datos propio que tiene algunos clips de [VIRAT Dataset 2.0](https://viratdata.org/), videos propios y otros videos de uso libre.
+* Para la evaluación de la calidad de detección de objetos en los videos, se debe seguir la [Guía para evaluar la detección de objetos](./src/yolotracker/docs/eval_object_detection.md), que utiliza:
+    * **[VIRAT Dataset 2.0](https://viratdata.org):** Solo se toman algunos videos de este dataset.
 
 ## Ejecutar la aplicación
 
@@ -477,11 +490,144 @@ Detalles:
 
 * **tests/:** Pruebas generales de la aplicación.
 
+* **reporte_tecnico/:** Reporte técnico de la aplicación.
+
 ## Tecnologías utilizadas
+
+
+* **Sistema Operativo** (Ubuntu 24.04.4 LTS): Ubuntu proporciona herramientas de manejo de drivers de GPU.
+* **Sistema Operativo** (Windows 10): Sistema Operativo de pruebas. Se usa para probar compatibilidad pues es el SO de mayor uso comercial.
+* **Drivers NVIDIA** (580.159.03): Conexión con GPU NVIDIA. Esta es la versión compatible con hardware utilizado para desarrollo.
+* **Docker Engine** (29.5.2): Despliegue de la aplicación y ejecución de Redis para notificaciones. Permite desplegar la aplicación con un solo comando. Permite instalar Redis con un solo comando.
+* **Redis Stack (contenedor)** (7.4.0-v8): Cache de detecciones con búsqueda semántica de embeddings. Notificaciones Pop-Up en aplicación web. Su motor de búsqueda por similitud semántica es rápido al estar cargado en memoria. Es necesario para las notificaciones.
+* **Pytorch (contenedor)** (2.10.0-cuda12.6-cudnn9-runtime): Imagen base de despliegue del sistema. Tiene Pytorch con soporte para CUDA preinstalado. Evita manejo de dependencias de pytorch al construir el contenedor de la aplicación.
+* **Python** (3.12.3): Lenguaje principal del sistema. Compatibilidad entre SO, librerías de visión por computadora, librearías de redes neuronales, librerías de manejo de hilos y multiprocesos.
+* **PyTroch** (2.10.0+cu126): Entrenamiento y pruebas de redes neuronales para detección de objetos (armas). Permite usar la GPU para entrenamiento. Existen múltiples modelos preentrenados compatibles con PyTorch.
+* **Flask** (3.1.3): Implementación de aplicación web. Fácil de usar, soporta conexiones con múltiples bases de datos.
+* **Gunicorn** (26.0.0): Servidor web WSGI. Se requiere para despliegues en producción de aplicación web escritas en Python.
+* **Onnxruntime-gpu** (1.24.4): Entorno de ejecución de modelos de detección de objetos en la aplicación. Ejecutar modelos con onnxruntime es más ligero y rápido que utilizar PyTorch.
+* **OpenCV-python** (4.13.0.92): Conexión con cámaras RTSP. Conexión con webcams. Procesamiento de cuadros. Con la clase VideoCapture se puede conectar a diferentes tipos de cámaras sin modificaciones en el código. Contiene funciones para transformar y procesar imágenes optimizadas.
+* **SQLite** (3.45.1): Base de datos de la aplicación. Integrada en SQLAlchemy, no requiere configuración de un servicio adicional.
 
 ## Métricas principales
 
+A este sistema se le ralizaron 3 tipos de evaluaciones principales:
+
+* **Capacidad de detección de personas y vehículos**
+* **Capacidad de detección de armas de fuego**
+* **Capacidad de detección de eventos de seguridad**
+
+Para evaluar la detección de personas, vehículos y armas de fuego, se adoptó el enfoque tradicional de medir la AP@0.5, es decir, la precisión promedio para umbrales de detección de 0.5. La evaluación se realizó sobre videos reales de cámaras CCTV del dataset VIRAT 2.0, así como los conjuntos de datos de Simulectic para detección de armas.
+
+<table>
+    <thead>
+        <tr>
+            <th>Clase</th>
+            <th>AP@0.5</th>
+            <th>Muestras</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Persona</td>
+            <td>0.27</td>
+            <td>39,869</td>
+        </tr>
+        <tr>
+            <td>Vehículo</td>
+            <td>0.74</td>
+            <td>33,635</td>
+        </tr>
+    </tbody>
+</table>
+
+<table>
+    <thead>
+        <tr>
+            <th>Clase</th>
+            <th>Dataset 1 AP@0.5:0.95</th>
+            <th>Dataset 1 y 2 AP@0.5:0.95</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Arma</td>
+            <td>0.26</td>
+            <td>0.25</td>
+        </tr>
+    </tbody>
+</table>
+
+Para evaluar la capacidad de detección de eventos de seguridad se utilizó el *Dataset de detección de eventos*, y se calcularon las métrica: *accuracy*, *precision*, *recall* y *F1*.
+
+<table>
+    <thead>
+        <tr>
+            <td>Evento</td>
+            <td>Accuracy</td>
+            <td>Precision</td>
+            <td>Recall</td>
+            <td>F1</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Merodeo</td>
+            <td>0.72</td>
+            <td>1.00</td>
+            <td>0.69</td>
+            <td>0.78</td>
+        </tr>
+        <tr>
+            <td>Intrusión</td>
+            <td>0.96</td>
+            <td>1.00</td>
+            <td>0.96</td>
+            <td>0.98</td>
+        </tr>
+        <tr>
+            <td>Objeto Abandonado</td>
+            <td>1.00</td>
+            <td>1.00</td>
+            <td>1.00</td>
+            <td>1.00</td>
+        </tr>
+        <tr>
+            <td>Arma</td>
+            <td>0.45</td>
+            <td>0.75</td>
+            <td>0.60</td>
+            <td>0.66</td>
+        </tr>
+        <tr>
+            <td>Media</td>
+            <td>0.78</td>
+            <td>0.93</td>
+            <td>0.81</td>
+            <td>0.85</td>
+        </tr>
+    </tbody>
+</table>
+
+Para más detalles sobre la evaluación y las métricas, consultar el [Reporte Técnico](./reporte_tecnico/videovigilancia-con-interpretacion-de-escenas.pdf).
+
 ## Limitaciones conocidas
+
+
+* **Bajo porcentaje de detección de armas de fuego:** El sistema no es capaz de detectar armas cortas (como pistolas) en escenas reales. Esto ocasiona falsos negativos en detección de armas.
+
+* **Necesidad de recalcular el fondo del video cada que hay un cambio permanente en la escena:** Para detectar objetos abandonados, si en un momento dado, se coloca nueva decoración o mobiliario, se tiene que usar la opción de “Calcular fondo” para que la detección de objetos olvidados siga funcionando. Esto ocasiona falsos positivos en eventos de detección de objetos olvidados.
+
+* **Baja detección en personas a distancia:** Si la altura de una persona en la imagen es de menor al 10% de la altura del video, se le dificulta al modelo hacer la detección. Esto ocasiona falsos negativos en videos a larga distancia.
+
+* **Pérdida de rastreo con cambios bruscos de ruta:** Cuando una persona hace un cambio brusco en su movimiento (ej: Gira 90°), es posible que el sistema pierda su rastro y lo identifique como una nueva persona. Esto ocasiona duplicación de alarmas o reinicio de contadores de permanencia.
+
+* **Perspectiva de la cámara para eventos de intrusión:** Si una persona pasa entre la cámara y el área restringida (aunque no la pise) se puede detectar un evento de intrusión. Esto ocasiona falsos positivos en eventos de intrusión.
+
+* **Fallos en la reidentificación de personas:** Cuando una persona sale de la escena, si no entra en un ángulo similar (ej: si no vuelve a entrar por la izquierda), el sistema no puede reidentificarlo. Esto ocasiona la pérdida de rastreo de algunas personas, lo que reinicia los contadores de permanencia.
 
 ## Créditos
 
+Roberto García Guzmán. Diseñador, Desarrollador, Tester, Documentador. betogarcia97@live.com.mx
+
+Código bajo Licencia Apache 2.0
