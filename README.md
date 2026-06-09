@@ -124,7 +124,26 @@ Independientemente del tipo de instalación se deben seguir los siguientes pasos
     docker compose -f docker/compose.yml up --build
     ```
 
-4. La aplicación puede accederse desde http://localhost:8000. El usuario por defecto es *admin@email.com* y la contraseña *admin*.
+4. Se debe esperar a que aparezca un mensaje como el siguiente:
+
+    ```bash
+    video-surveillance-app  | Settings added correctly
+    video-surveillance-app  | User Admin created successfully.
+    video-surveillance-app  | Iniciando la aplicación...
+    video-surveillance-app  | [2026-06-08 20:16:53 -0600] [30] [INFO] Starting gunicorn 26.0.0
+    video-surveillance-app  | [2026-06-08 20:16:53 -0600] [30] [INFO] Listening at: http://0.0.0.0:8000 (30)
+    video-surveillance-app  | [2026-06-08 20:16:53 -0600] [30] [INFO] Using worker: gthread
+    video-surveillance-app  | [2026-06-08 20:16:53 -0600] [31] [INFO] Booting worker with pid: 31
+    video-surveillance-app  | [2026-06-08 20:16:53 -0600] [30] [INFO] Control socket listening at /root/.gunicorn/gunicorn.ctl
+    ```
+
+5. La aplicación puede accederse desde http://localhost:8000. El usuario por defecto es *admin@email.com* y la contraseña *admin*.
+
+6. Para detener la aplicación se debe usar `d Detach` para salir del modo bitácora de Docker. Y ejecutar:
+
+    ```bash
+    docker compose -f docker/compose.yml stop
+    ```
 
 NOTA: En *modo aplicación*, los modelos son cargados desde `weights/` y los datos de la aplicación son guardados en `instance/`.
 
